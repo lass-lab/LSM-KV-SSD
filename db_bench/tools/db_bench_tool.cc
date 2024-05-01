@@ -31,9 +31,9 @@
 #include <mutex>
 #include <thread>
 #include <unordered_map>
-/////////////////////////////// BulkDB
+/////////////////////////////// BandSlim
 #include <string>
-/////////////////////////////// BulkDB
+/////////////////////////////// BandSlim
 
 #include "db/db_impl/db_impl.h"
 #include "db/malloc_stats.h"
@@ -1971,9 +1971,9 @@ class Stats {
   uint64_t last_report_done_;
   uint64_t next_report_;
   uint64_t bytes_;
-  /////////////////////////////// BulkDB
+  /////////////////////////////// BandSlim
   uint64_t previous_bytes_;
-  /////////////////////////////// BulkDB
+  /////////////////////////////// BandSlim
   uint64_t last_op_finish_;
   uint64_t last_report_finish_;
   std::unordered_map<OperationType, std::shared_ptr<HistogramImpl>,
@@ -1998,9 +1998,9 @@ class Stats {
     done_ = 0;
     last_report_done_ = 0;
     bytes_ = 0;
-    //////////////////////////// BulkDB
+    //////////////////////////// BandSlim
     previous_bytes_ = 0;
-    //////////////////////////// BulkDB
+    //////////////////////////// BandSlim
     seconds_ = 0;
     start_ = clock_->NowMicros();
     sine_interval_ = clock_->NowMicros();
@@ -2091,7 +2091,7 @@ class Stats {
     last_op_finish_ = clock_->NowMicros();
   }
 
-  ///////////////////////////////////////// BulkDB
+  ///////////////////////////////////////// BandSlim
   void SetPreviousBytes(int64_t n) {
     previous_bytes_ = n;
   }
@@ -2103,7 +2103,7 @@ class Stats {
   uint64_t GetDone() {
     return done_;
   }
-  ///////////////////////////////////////// BulkDB
+  ///////////////////////////////////////// BandSlim
 
   void FinishedOps(DBWithColumnFamilies* db_with_cfh, DB* db, int64_t num_ops,
                    enum OperationType op_type = kOthers) {
@@ -2152,7 +2152,7 @@ class Stats {
           next_report_ += FLAGS_stats_interval;
 
         } else {
-          //////////////////////////////////////////////////////// BulkDB
+          //////////////////////////////////////////////////////// BandSlim
           std::string extra;
           if (bytes_ > 0) {
             double elapsed = (now - last_report_finish_) / 1000000.0;
@@ -2179,7 +2179,7 @@ class Stats {
                   (now - last_report_finish_) / 1000000.0,
                   (now - start_) / 1000000.0,
                   extra.c_str());
-          //////////////////////////////////////////////////////// BulkDB
+          //////////////////////////////////////////////////////// BandSlim
 
           if (id_ == 0 && FLAGS_stats_per_interval) {
             std::string stats;
@@ -2250,10 +2250,10 @@ class Stats {
       // elapsed times.
       double elapsed = (finish_ - start_) * 1e-6;
       char rate[100];
-      //////////////////////////////////////////////// BulkDB
+      //////////////////////////////////////////////// BandSlim
       snprintf(rate, sizeof(rate), "%6.1f MB/s",
                (bytes_ / 1024.0) / elapsed);   // KB unit
-      //////////////////////////////////////////////// BulkDB
+      //////////////////////////////////////////////// BandSlim
       extra = rate;
     }
     AppendWithSpace(&extra, message_);
@@ -4599,9 +4599,9 @@ class Benchmark {
     WriteBatch batch(/*reserved_bytes=*/0, /*max_bytes=*/0,
                      user_timestamp_size_);
     Status s;
-    //////////////////////////////////// BulkDB
+    //////////////////////////////////// BandSlim
     // int64_t bytes = 0;
-    //////////////////////////////////// BulkDB
+    //////////////////////////////////// BandSlim
 
     std::unique_ptr<const char[]> key_guard;
     Slice key = AllocateKey(&key_guard);
@@ -4646,17 +4646,17 @@ class Benchmark {
       DBWithColumnFamilies* db_with_cfh = SelectDBWithCfh(id);
       batch.Clear();
       int64_t batch_bytes = 0;
-      //////////////////////// BulkDB
+      //////////////////////// BandSlim
       int64_t bytes = 0;
-      //////////////////////// BulkDB
+      //////////////////////// BandSlim
 
-      /////////////////////////////////////////////////////////////// FitKVS
+      /////////////////////////////////////////////////////////////// BandSlim
       // UniformDistribution jh_dist(0,8); //UniformDistribution(0,1);
-      /////////////////////////////////////////////////////////////// FitKVS
+      /////////////////////////////////////////////////////////////// BandSlim
       for (int64_t j = 0; j < entries_per_batch_; j++) {
         int64_t rand_num = key_gens[id]->Next();
         GenerateKeyFromInt(rand_num, FLAGS_num, &key);
-        /////////////////////////////////////////////////////////////// FitKVS
+        /////////////////////////////////////////////////////////////// BandSlim
         /*int64_t seed = jh_dist.Generate();
         Slice val;
         switch (seed) {
@@ -4673,8 +4673,8 @@ class Benchmark {
         }*/ // Workload C
         // Slice val = gen.Generate((jh_dist.Generate()==0?2048:8)); // Workload A
         // Slice val = gen.Generate((jh_dist.Generate()==0?8:2048)); // Workload B
-        /////////////////////////////////////////////////////////////// FitKVS
-        Slice val = gen.Generate(); // Baseline
+        /////////////////////////////////////////////////////////////// BandSlim
+        Slice val = gen.Generate(); // Original Code
         if (use_blob_db_) {
 #ifndef ROCKSDB_LITE
           // Stacked BlobDB
@@ -4689,13 +4689,13 @@ class Benchmark {
 #endif  //  ROCKSDB_LITE
         } else if (FLAGS_num_column_families <= 1) {
           // [iLSM] key and value to put.
-          ////////////////////////////////////////////////////////////// BulkDB
+          ////////////////////////////////////////////////////////////// BandSlim
           // ilsm_db_.Put(key.ToString(), val.ToString(), thread->stats.GetDone());
           ilsm_db_.Put(key.ToString(), val.ToString());  // PUT
           // std::string value;                             // GET
           // ilsm_db_.Get(key.ToString(), value);           // GET
           // val.ToString() = value;                        // GET
-          ////////////////////////////////////////////////////////////// BulkDB
+          ////////////////////////////////////////////////////////////// BandSlim
           // [iLSM] Comment out below line.
           /*
           batch.Put(key, val);
@@ -4780,10 +4780,10 @@ class Benchmark {
         // Not stacked BlobDB
         s = db_with_cfh->db->Write(write_options_, &batch);
       }
-      /////////////////////////////////////////// BulkDB
+      /////////////////////////////////////////// BandSlim
       // thread->stats.SetPreviousBytes(thread->stats.GetBytes());
       thread->stats.AddBytes(bytes);
-      /////////////////////////////////////////// BulkDB
+      /////////////////////////////////////////// BandSlim
       thread->stats.FinishedOps(db_with_cfh, db_with_cfh->db,
                                 entries_per_batch_, kWrite);
       if (FLAGS_sine_write_rate) {
@@ -4816,10 +4816,10 @@ class Benchmark {
         ErrorExit();
       }
     }
-    /////////////////////////////////////// BulkDB
+    /////////////////////////////////////// BandSlim
     // thread->stats.AddBytes(bytes);
-    // std::cout << ilsm_db_.Report() << std::endl;  // 이거 수정 필요
-    /////////////////////////////////////// BulkDB
+    // std::cout << ilsm_db_.Report() << std::endl; 
+    /////////////////////////////////////// BandSlim
   }
 
   Status DoDeterministicCompact(ThreadState* thread,
@@ -5870,7 +5870,7 @@ class Benchmark {
       GenerateKeyFromInt(key_rand, FLAGS_num, &key);
       // int query_type = query.GetType(rand_v);
       ///////////////////////////////////
-      int query_type = 1;  // BulkDB
+      int query_type = 1;  // BandSlim
       ///////////////////////////////////
 
       // change the qps
@@ -5966,12 +5966,12 @@ class Benchmark {
         // [iLSM] Put
         // ilsm_err = ilsm_db_.Put(key.ToString(), gen.Generate(static_cast<unsigned int>(val_size)).ToString());
         std::cout << val_size << '\n';
-       	////////////////////////////////////////////////////////////////// BulkDB
+       	////////////////////////////////////////////////////////////////// BandSlim
         // if (ilsm_err != 0) {
         //     fprintf(stderr, "[iLSM] Put, fail, at MixGraph\n");
         //     ErrorExit();
         // }
-        ////////////////////////////////////////////////////////////////// BulkDB
+        ////////////////////////////////////////////////////////////////// BandSlim
 
         // [iLSM] comment out below
         /*
@@ -6079,10 +6079,10 @@ class Benchmark {
                                get_perf_context()->ToString());
     }
 
-    /////////////////////////////////////// BulkDB
+    /////////////////////////////////////// BandSlim
     // thread->stats.AddBytes(bytes);
     std::cout << ilsm_db_.Report() << std::endl;
-    /////////////////////////////////////// BulkDB
+    /////////////////////////////////////// BandSlim
   }
 
   void IteratorCreation(ThreadState* thread) {
