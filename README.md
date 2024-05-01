@@ -3,8 +3,8 @@
 ## Introduction
 
 <p align="center">
-  <img src="./overview.png" alt="Overview Image">
-</p> 
+  <img src="./overview.png" alt="Overview Image" width="600">
+</p>
 
 This repository hosts the open-source implementation of _BandSlim_, a solution introduced in a paper submitted to ICPP 2024. _BandSlim_ is a novel framework designed to enhance data transfer efficiency and storage space utilization in KV-SSDs. </br>
 - **Figure (a)**: software architecture overview of _BandSlim_. </br>
@@ -15,10 +15,32 @@ This repository hosts the open-source implementation of _BandSlim_, a solution i
 _BandSlim_ is a purely software-based solution that can be integrated into any KV-SSD with only minor modifications to software elements like device drivers and firmware. _BandSlim_ is equipped with two methods to streamline bandwidth during I/O transmission: **(i)** _Fine-grained Inline Value Transfer_, **(ii)** _Fine-grained Value Packing with Selective Packing_
 
 **1. Fine-grained Inline Value Transfer**: it employs an inline value transfer mechanism that incorporates values smaller than a memory page size directly into the reserved fields of NVMe commands, substantially reducing the volume of data transmitted over the interconnect to convey the desired value. </br>
-  - it incorporates an adaptive value transfer strategy that melds NVMe-command-piggybacking with rapid, page-unit Direct Memory Access (DMA), optimizing the response times for transferring values of varying, especially large sizes. </br>
+  - it incorporates an **adaptive value transfer strategy** that melds NVMe-command-piggybacking with rapid, page-unit Direct Memory Access (DMA), optimizing the response times for transferring values of varying, especially large sizes. </br>
+    - ```c
+      /* Adaptive Value Transfer Algorithm */
+      if (value_size <= threshold1 * alpha) {
+          // Mode 1. Piggybacking-based Value Transfer
+          Piggyback(value_addr, value_size);
+      } else if (value_size % 4096 <= threshold2 * beta) {
+          // Mode 2. Hybrid Value Transfer
+          page_size = (value_size / 4096) * 4096;
+          PRPbasedDMA(value_addr, page_size);
+          Piggyback(value_addr + page_size, value_size - page_size);
+      } else {
+          // Mode 3. PRP-based Value Transfer
+          extra_page = (value_size % 4096) > 0 ? 1 : 0;
+          page_size = ((value_size / 4096) + extra_page) * 4096;
+          PRPbasedDMA(value_addr, page_size);
+      }
+      ```
 
 **2. Fine-grained, Efficient Value Packing**: it adopts a _Selective Packing with Backfilling Policy_ specifically designed for meticulous management of the NAND page buffer. 
   - it addresses a common issue in in-device DMA engines, which require the DMA destination address to be aligned with a memory page block (4KB), necessitating memory copies for fine-grained packing of DMA-transferred values.
+
+<p align="center">
+  <img src="./select_pack.png" alt="Select Packing Image" width="500">
+</p>
+
   - it maintains alignment rules for large values transferred via page-unit DMA, but it strategically fills the gaps with smaller values transferred via piggybacking. Thus, it can reduce the overhead associated with memory copies when packing large values while maximizing NAND page utilization.
 
 ## Components
