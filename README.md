@@ -38,10 +38,10 @@ _BandSlim_ is a purely software-based solution that can be integrated into any K
   - it addresses a common issue in in-device DMA engines, which require the DMA destination address to be aligned with a memory page block (4KB), necessitating memory copies for fine-grained packing of DMA-transferred values.
 
 <p align="center">
-  <img src="./select_pack.png" alt="Select Packing Image" width="500">
+  <img src="./select_pack.png" alt="Select Packing Image" width="450">
 </p>
 
-  - it maintains alignment rules for large values transferred via page-unit DMA, but it strategically fills the gaps with smaller values transferred via piggybacking. Thus, it can reduce the overhead associated with memory copies when packing large values while maximizing NAND page utilization.
+  - it maintains alignment rules for large values transferred via page-unit DMA, but it strategically fills the gaps with smaller values transferred via piggybacking (see the above figure). Thus, it can reduce the overhead associated with memory copies when packing large values while maximizing NAND page utilization.
 
 ## Components
 
@@ -163,4 +163,8 @@ sudo apt install texlive texlive-latex-extra texlive-fonts-recommended dvipng cm
 
 The artifact currently consists of one main directory:
 
-- `db_bench/`: a modified version of RocksDB's benchmarking tool, _db\_bench_, consisting of _BandSlim_ key-value API and driver.
+- `db_bench/`: a modified version of RocksDB's popular benchmarking tool, _db\_bench_.
+  - `tools/`: it includes _BandSlim_'s user-facing key-value API and NVMe driver functions.
+    - `iLSM.cc, iLSM.h`: a core part of _BandSlim_ key-value API and driver.
+    - `db_bench_tool.c`: it implements various workloads including _mix\_graph (M)_, _fill\_seq (A)_, and some synthetic patterns like _B, C, D_ presented in the paper.
+  - `test.sh`: a simple test script that we can specify and run workloads.
