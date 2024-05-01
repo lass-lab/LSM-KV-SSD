@@ -2,7 +2,13 @@
 <!--[![DOI](https://zenodo.org/badge/701288709.svg)](https://zenodo.org/doi/10.5281/zenodo.10672947) [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/lass-lab/DeepVM/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/lass-lab/DeepVM) [![SWH](https://archive.softwareheritage.org/badge/swh:1:dir:561f421fa40bdc4fdb1f9f0c63b8f93e73886717/)](https://archive.softwareheritage.org/swh:1:dir:561f421fa40bdc4fdb1f9f0c63b8f93e73886717;origin=https://github.com/lass-lab/DeepVM;visit=swh:1:snp:1c3553a75d1f6d2d8a3dc6392c0f418747bf3fa5;anchor=swh:1:rev:b7c1bce36ec625dd8847ce111d36bc456718d980)-->
 ## Introduction
 
+<p align="center">
+  <img src="./overview.png" alt="Overview Image">
+</p> 
+
 This repository hosts the open-source implementation of _BandSlim_, a solution introduced in a paper submitted to ICPP 2024. _BandSlim_ is a novel framework designed to enhance data transfer efficiency and storage space utilization in KV-SSDs. </br>
+- **Figure (a)**: software architecture overview of _BandSlim_. </br>
+- **Figure (b)**: NVMe-command-piggybacking-based value transfer proposed in _BandSlim_. </br>
 
 ## What is _BandSlim_?
 
