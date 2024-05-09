@@ -168,3 +168,8 @@ The artifact currently consists of one main directory:
     - `iLSM.cc, iLSM.h`: a core part of _BandSlim_ key-value API and driver.
     - `db_bench_tool.c`: it implements various workloads including _mix\_graph (M)_, _fill\_seq (A)_, and some synthetic patterns like _B, C, D_ presented in the paper.
   - `test.sh`: a simple test script that we can specify and run workloads.
+- `firmware/`: it containts the source code for the firmware of _BandSlim_'s LSM KV-SSD.
+  - `src/`: it houses all the firmware source code necessary for the LSM KV-SSD's operation.
+    - `nvme/`: it contains the source code for the NVMe controller (under preparation).
+    - `sstable/`: the implementations related to the in-device LSM-tree, specifically focusing on the SSTable components (under preparation).
+    - `memtable/`: it focuses on the MemTable components of the in-device LSM-tree (under preparation).
