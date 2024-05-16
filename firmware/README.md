@@ -17,12 +17,12 @@ This subdirectory contains the source code for the NVM Express (NVMe) controller
 #### `./src/sstable`
 Located within this subdirectory are the implementations related to the in-device LSM-tree. </br> 
 Specifically, this focuses on the Sorted Strings Table (SSTable) components. </br>
-- Note that the code in this directory is also undergoing reorganization to enhance maintainability and performance.
+<!--- Note that the code in this directory is also undergoing reorganization to enhance maintainability and performance.-->
 
 #### `./src/memtable`
 This subdirectory focuses on the MemTable components of the in-device LSM-tree. </br>
 - It includes implementations crucial for the in-memory storage structures, which temporarily store data before it is written to the SSTables. 
-- Similar to other parts, this section is also in the process of being cleaned and restructured.
+<!--- Similar to other parts, this section is also in the process of being cleaned and restructured.-->
 
 ## Additional Information
 

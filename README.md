@@ -172,4 +172,4 @@ The artifact currently consists of one main directory:
   - `src/`: it houses all the firmware source code necessary for the LSM KV-SSD's operation.
     - `nvme/`: it contains the source code for the NVMe controller (under preparation).
     - `sstable/`: the implementations related to the in-device LSM-tree, specifically focusing on the SSTable components.
-    - `memtable/`: it focuses on the MemTable components of the in-device LSM-tree (under preparation).
+    - `memtable/`: it focuses on the MemTable components of the in-device LSM-tree.
