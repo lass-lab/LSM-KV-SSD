@@ -157,7 +157,7 @@ sudo apt install texlive texlive-latex-extra texlive-fonts-recommended dvipng cm
 <!-- - The provided software and algorithms are for research and educational purposes. Users should exercise caution and understand the limitations and requirements of each component.-->
 
 - **The source code for the _BandSlim_ key-value controller is currently undergoing preparations for public release at the time of submission.**
-  - We anticipate uploading the entire source code around mid-May.
+  - We anticipate uploading the entire source code around ~~mid-May~~ extended to **early-June**.
 
 ## Repository Structure
 
