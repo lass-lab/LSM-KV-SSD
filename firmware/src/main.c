@@ -97,8 +97,7 @@ int main()
 			Xil_SetTlbAttributes(u * MB, 0xC1E); // cached & buffered
 		else if (u < 0x180)
 		 	 Xil_SetTlbAttributes(u * MB, 0xC12); // uncached & unbuffered
-		else if (u < ITER_SSTABLE_LEVEL0_INDEX_BUFFER_START_ADDR / MB)
-		// else if (u < 0x400)
+		else if (u < 0x400)
 			Xil_SetTlbAttributes(u * MB, 0xC1E); // cached & buffered
 		else
 			Xil_SetTlbAttributes(u * MB, 0xC12); // uncached & nonbuffered

@@ -276,12 +276,6 @@ void ReqTransSliceToLowLevel()
 					case 0xFF: // Get
 						stat[KV_GET].hit++;
 						break;
-					case 0xFE: // Seek
-						stat[ITER_SEEK].hit++;
-						break;
-					case 0xFD: // Next
-						stat[ITER_NEXT].hit++;
-						break;
 					default:
 						break;
 				}

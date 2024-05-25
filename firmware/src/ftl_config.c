@@ -146,9 +146,6 @@ void printMemoryMap()
 	xil_printf("Cached Area (RESERVED1_START_ADDR): 0x%u MB\n", RESERVED1_START_ADDR / MB);
 	xil_printf("----------------- For Key-Value SSD -----------------------\n");
 
-	xil_printf("Capacity for %d Iterators %u Bytes (%u MB)\n", MAX_ITERATOR_NUM, ITER_SSTABLE_LEVEL3_DATA_BUFFER_START_ADDR + ITER_SSTABLE_LEVEL3_DATA_BUFFER_SIZE - ITER_POOL_START_ADDR, (ITER_SSTABLE_LEVEL3_DATA_BUFFER_START_ADDR+ITER_SSTABLE_LEVEL3_DATA_BUFFER_SIZE-ITER_POOL_START_ADDR)/MB);
-	xil_printf("Current End Addr 0x%x, DRAM End Addr 0x%x\n", ITER_SSTABLE_LEVEL3_DATA_BUFFER_START_ADDR + ITER_SSTABLE_LEVEL3_DATA_BUFFER_SIZE, DRAM_END_ADDR);
-
 	xil_printf("TOTAL DRAM USAGE : %u MB\n", (DATA_BUFFER_SIZE+
 										TEMPORARY_DATA_BUFFER_SIZE+
 										SPARE_DATA_BUFFER_SIZE+
@@ -190,7 +187,6 @@ void printMemoryLayout () {
 
 	unsigned int databuf_size = DATA_BUFFER_SIZE;
 	unsigned int sparebuf_size = SPARE_DATA_BUFFER_SIZE;
-	unsigned int iterator_size = DIRECT_DMA_BUFFER_ADDR + DIRECT_DMA_BUFFER_SIZE - ITER_POOL_START_ADDR;
 	
 	unsigned int avail_0_size = RESERVED0_END_ADDR - SUPER_SSTABLE_LIST3_END_ADDR;
 	unsigned int avail_1_size = DRAM_END_ADDR - DIRECT_DMA_BUFFER_ADDR + DIRECT_DMA_BUFFER_SIZE;
@@ -215,7 +211,6 @@ void printMemoryLayout () {
 	xil_printf("SPARE_BUFFER_SIZE : %u B (%u.%uMB)\r\n", sparebuf_size, sparebuf_size / MB, (sparebuf_size % MB) * 100 / MB);
 
 	xil_printf("\n\n---------------- RESERVED 1 AREA (%u.%uMB) ----------------\n", reserved_1_size / MB, (reserved_1_size % MB) * 100 / MB);
-	xil_printf("ITERATOR_SIZE : %u B (%u.%uMB)\r\n", iterator_size, iterator_size / MB, (iterator_size % MB) * 100 / MB);
 	xil_printf("AVAILABLE_AREA_1_SIZE : %u B (%u.%uMB)\r\n", avail_1_size, avail_1_size / MB, (avail_1_size % MB) * 100 / MB);
 }
 
