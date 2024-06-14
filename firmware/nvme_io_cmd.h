@@ -1,12 +1,13 @@
 //////////////////////////////////////////////////////////////////////////////////
-// garbage_collection.h for Cosmos+ OpenSSD
-// Copyright (c) 2017 Hanyang University ENC Lab.
+// nvme_io_cmd.h for Cosmos+ OpenSSD
+// Copyright (c) 2016 Hanyang University ENC Lab.
 // Contributed by Yong Ho Song <yhsong@enc.hanyang.ac.kr>
-//				  Jaewook Kwak <jwkwak@enc.hanyang.ac.kr>
+//				  Youngjin Jo <yjjo@enc.hanyang.ac.kr>
+//				  Sangjin Lee <sjlee@enc.hanyang.ac.kr>
 //
 // This file is part of Cosmos+ OpenSSD.
 //
-// Cosmos+ OpenSSD is free software; you can redistribute it and/or modifya
+// Cosmos+ OpenSSD is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3, or (at your option)
 // any later version.
@@ -20,19 +21,20 @@
 // along with Cosmos+ OpenSSD; see the file COPYING.
 // If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////////
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: ENC Lab. <http://enc.hanyang.ac.kr>
-// Engineer: Jaewook Kwak <jwkwak@enc.hanyang.ac.kr>
+// Engineer: Sangjin Lee <sjlee@enc.hanyang.ac.kr>
 //
 // Project Name: Cosmos+ OpenSSD
 // Design Name: Cosmos+ Firmware
-// Module Name: Garbage Collector
-// File Name: garbage_collection.h
+// Module Name: NVMe IO Command Handler
+// File Name: nvme_io_cmd.h
 //
 // Version: v1.0.0
 //
 // Description:
-//   - define parameters, data structure and functions of garbage collector
+//   - declares functions for handling NVMe IO commands
 //////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -42,30 +44,17 @@
 //   - First draft
 //////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __NVME_IO_CMD_H_
+#define __NVME_IO_CMD_H_
 
-#ifndef GARBAGE_COLLECTION_H_
-#define GARBAGE_COLLECTION_H_
+#include "xtime_l.h"
 
-#include "ftl_config.h"
+void handle_nvme_io_cmd(NVME_COMMAND *nvmeCmd);
+void TriggerInternalPageWrite(const unsigned int lsa, const unsigned int bufAddr, const unsigned int bufSize);
+void TriggerInternalPageRead (const unsigned int startLsa, const unsigned int bufAddr, const unsigned int bufSize);
+void TriggerInternalPagesRead (const unsigned int startLsa, const unsigned int bufAddr, const unsigned int numPages);
+void TriggerInternalPagesWrite (const unsigned int startLsa, const unsigned int bufAddr, const unsigned int numPages);
+unsigned int GetTypefromCmdSlotTag (int cmdSlotTag);
 
-typedef struct _GC_VICTIM_LIST_ENTRY {
-	unsigned int headBlock : 16;
-	unsigned int tailBlock : 16;
-} GC_VICTIM_LIST_ENTRY, *P_GC_VICTIM_LIST_ENTRY;
+#endif	//__NVME_IO_CMD_H_
 
-typedef struct _GC_VICTIM_MAP {
-	GC_VICTIM_LIST_ENTRY gcVictimList[USER_DIES][SLICES_PER_BLOCK + 1];
-} GC_VICTIM_MAP, *P_GC_VICTIM_MAP;
-
-void InitGcVictimMap();
-void GarbageCollection(unsigned int dieNo);
-
-void PutToGcVictimList(unsigned int dieNo, unsigned int blockNo, unsigned int invalidSliceCnt);
-unsigned int GetFromGcVictimList(unsigned int dieNo);
-void SelectiveGetFromGcVictimList(unsigned int dieNo, unsigned int blockNo);
-
-extern P_GC_VICTIM_MAP gcVictimMapPtr;
-extern unsigned int gcTriggered;
-extern unsigned int copyCnt;
-
-#endif /* GARBAGE_COLLECTION_H_ */

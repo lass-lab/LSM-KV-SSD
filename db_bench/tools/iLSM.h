@@ -116,14 +116,3 @@ namespace iLSM {
 #endif
     };
 }
-            ///* Internal functions for the write-back cache */
-            //void wc_init(void);
-            //int wc_insert(const std::string &value, uint32_t *cdw14);
-            //void wc_flush(void);
-            //int wc_search(unsigned int target_key, std::string &value);
-            //void wc_invalidate(unsigned int target_key);
-            ///* < Internal functions for the read cache */
-            //void rc_small_cache(unsigned int lba, void *data);
-            //void *rc_small_get(unsigned int lba);
-            //void rc_big_cache(std::string key, void *data, unsigned int value_len);
-            //void *rc_big_get(std::string key);
